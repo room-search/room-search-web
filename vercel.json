@@ -8,6 +8,14 @@
     {
       "source": "/api/escape/cafes/:id",
       "destination": "/api/escape/cafes/[id]?id=:id"
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/index.html"
     }
   ],
   "functions": {
