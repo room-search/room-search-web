@@ -27,7 +27,7 @@ npm run build
 npm start
 ```
 
-운영 환경에서도 Node.js 서버를 실행하고 `ROOM_SEARCH_API_KEY`를 비밀 환경 변수로 설정해야 합니다. 정적 파일만 제공하는 GitHub Pages에서는 API 키를 안전하게 보관할 수 없으므로 이 서버를 함께 실행할 수 있는 호스팅이 필요합니다. 빌드 결과는 `dist/`에 생성됩니다.
+운영 환경에서는 Node.js 서버를 실행하거나 Vercel에 배포할 수 있습니다. Vercel은 `api/` 함수가 API 요청을 처리하므로 프로젝트 설정에 `ROOM_SEARCH_API_KEY`를 비밀 환경 변수로 등록해 주세요. 정적 파일만 제공하는 GitHub Pages에서는 API 키를 안전하게 보관할 수 없습니다. 빌드 결과는 `dist/`에 생성됩니다.
 
 API 키는 브라우저 코드에 포함하지 않습니다. Node 서버가 `X-API-Key` 헤더를 붙여 APISis API를 호출하며, 검색 결과와 지역 목록은 짧게 캐시합니다. 사용자 찜 목록과 테마 모드는 각 기기의 `localStorage`에만 저장됩니다.
 

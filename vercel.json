@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/escape/themes/:id",
+      "destination": "/api/escape/themes/[id]?id=:id"
+    },
+    {
+      "source": "/api/escape/cafes/:id",
+      "destination": "/api/escape/cafes/[id]?id=:id"
+    }
+  ],
+  "functions": {
+    "api/**/*.mjs": {
+      "includeFiles": "public/room-search-icon.png",
+      "maxDuration": 60
+    }
+  }
+}
