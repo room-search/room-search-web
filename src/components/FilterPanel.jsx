@@ -173,7 +173,7 @@ function RangeFilter({ filterKey, label, value, range, idPrefix, formatValue, lo
     <div className="filter-section range-filter">
       <div className="range-label">
         <label className="filter-label" htmlFor={lowerId}>{label}</label>
-        <span className="range-value">{describeRange(lower, upper, range, formatValue)}</span>
+        <span className="range-value selectable-text">{describeRange(lower, upper, range, formatValue)}</span>
       </div>
       <div
         className="dual-range"
@@ -218,7 +218,7 @@ function RangeFilter({ filterKey, label, value, range, idPrefix, formatValue, lo
           />
         </div>
       </div>
-      <div className="range-ends"><span>{lowerHint}</span><span>{upperHint}</span></div>
+      <div className="range-ends"><span className="selectable-text">{lowerHint}</span><span className="selectable-text">{upperHint}</span></div>
     </div>
   );
 }

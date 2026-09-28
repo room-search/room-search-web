@@ -33,7 +33,7 @@ function baseHeaders(dev = false) {
       "default-src 'self'",
       "script-src 'self'" + (dev ? " 'unsafe-inline'" : ''),
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' https: data:",
+      "img-src 'self' https: data: blob:",
       "font-src 'self' data:",
       "connect-src 'self' ws: wss:",
       "object-src 'none'",

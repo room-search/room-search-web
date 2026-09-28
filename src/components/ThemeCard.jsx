@@ -28,12 +28,26 @@ function Poster({ theme }) {
 
 export default function ThemeCard({ theme, favorite, onFavorite, onOpen }) {
   const satisfaction = theme.review?.average ?? theme.satisfy;
+  function openTheme(event) {
+    const selection = window.getSelection();
+    const selectedNodes = [selection?.anchorNode, selection?.focusNode].filter(Boolean);
+    const hasSelectionInCard = event.detail > 0
+      && selection
+      && !selection.isCollapsed
+      && selectedNodes.some((node) => event.currentTarget.contains(node));
+    if (hasSelectionInCard) {
+      event.preventDefault();
+      return;
+    }
+    onOpen();
+  }
+
   return (
     <article className="theme-card">
       <button
         type="button"
         className="theme-card-open"
-        onClick={onOpen}
+        onClick={openTheme}
         aria-label={theme.name + ' 상세 정보 보기'}
       >
         <Poster theme={theme} />
@@ -44,18 +58,18 @@ export default function ThemeCard({ theme, favorite, onFavorite, onOpen }) {
             </span>
             {Number(satisfaction) > 0 ? (
               <span className="satisfaction" aria-label={'만족도 ' + formatScore(satisfaction)}>
-                <Star size={13} fill="currentColor" /> {formatScore(satisfaction)}
+                <Star size={13} fill="currentColor" /> <span className="selectable-text">{formatScore(satisfaction)}</span>
               </span>
             ) : null}
           </div>
           <h3>{theme.name || '이름 없는 테마'}</h3>
           <div className="theme-card-scores">
-            <span>난이도 <b>{formatScore(theme.difficulty)}</b></span>
-            <span>공포도 <b>{formatScore(theme.fear)}</b></span>
+            <span>난이도 <b className="selectable-text">{formatScore(theme.difficulty)}</b></span>
+            <span>공포도 <b className="selectable-text">{formatScore(theme.fear)}</b></span>
           </div>
           <div className="theme-card-meta">
-            <span>{formatDuration(theme.playtime)}</span>
-            <span>{formatWon(theme.price)}</span>
+            <span className="selectable-text">{formatDuration(theme.playtime)}</span>
+            <span className="selectable-text">{formatWon(theme.price)}</span>
           </div>
         </div>
       </button>

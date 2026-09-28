@@ -727,14 +727,19 @@ function SearchApp() {
       </main>
 
       <footer className="site-footer">
-        <a className="footer-brand" href="/" aria-label="룸서치 홈">
-          <img src="/room-search-icon.png" alt="" width="25" height="25" />
-          <span>룸서치</span>
-        </a>
         <nav className="footer-policy-links" aria-label="약관 및 개인정보 안내">
           <a href="/privacy-policy">개인정보처리방침</a>
           <a href="/terms">이용약관</a>
         </nav>
+        <button
+          type="button"
+          className="footer-theme-button"
+          onClick={() => setDarkMode((current) => !current)}
+          aria-label={darkMode ? '라이트 모드로 변경' : '다크 모드로 변경'}
+          title={darkMode ? '라이트 모드' : '다크 모드'}
+        >
+          {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
       </footer>
 
       <nav className="mobile-bottom-nav" aria-label="모바일 메뉴">
@@ -800,6 +805,31 @@ function SearchApp() {
 }
 
 function App() {
+  useEffect(() => {
+    function preventUnneededDrag(event) {
+      const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+      if (target?.closest('img, svg, a')) {
+        event.preventDefault();
+        return;
+      }
+      if (target?.closest('.selectable-text, input, textarea, [contenteditable="true"]')) return;
+      const selection = document.getSelection();
+      const selectionNodes = [selection?.anchorNode, selection?.focusNode].filter(Boolean);
+      const selectionIsAllowed = selection
+        && !selection.isCollapsed
+        && selectionNodes.length === 2
+        && selectionNodes.every((node) => {
+          const element = node instanceof Element ? node : node.parentElement;
+          return element?.closest('.selectable-text');
+        });
+      if (selectionIsAllowed) return;
+      event.preventDefault();
+    }
+
+    document.addEventListener('dragstart', preventUnneededDrag, true);
+    return () => document.removeEventListener('dragstart', preventUnneededDrag, true);
+  }, []);
+
   const pathname = window.location.pathname.replace(/\/+$/u, '') || '/';
   if (pathname === '/privacy-policy') return <LegalPage page="privacy" />;
   if (pathname === '/terms') return <LegalPage page="terms" />;

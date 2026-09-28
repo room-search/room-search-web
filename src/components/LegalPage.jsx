@@ -1,19 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Moon, Sun } from 'lucide-react';
 
 const EFFECTIVE_DATE = '2026년 9월 28일';
 const PRIVACY_LAW_URL = 'https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1016143207';
+const THEME_KEY = 'room-search.theme.v1';
 
-function LegalFooter() {
+function LegalFooter({ darkMode, onToggleTheme }) {
   return (
     <footer className="site-footer legal-footer">
-      <a className="footer-brand" href="/" aria-label="룸서치 홈">
-        <img src="/room-search-icon.png" alt="" width="25" height="25" />
-        <span>룸서치</span>
-      </a>
       <nav className="footer-policy-links" aria-label="약관 및 개인정보 안내">
         <a href="/privacy-policy">개인정보처리방침</a>
         <a href="/terms">이용약관</a>
       </nav>
+      <button
+        type="button"
+        className="footer-theme-button"
+        onClick={onToggleTheme}
+        aria-label={darkMode ? '라이트 모드로 변경' : '다크 모드로 변경'}
+        title={darkMode ? '라이트 모드' : '다크 모드'}
+      >
+        {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+      </button>
     </footer>
   );
 }
@@ -129,17 +136,28 @@ function TermsOfService() {
 export default function LegalPage({ page }) {
   const isPrivacy = page === 'privacy';
   const title = isPrivacy ? '개인정보처리방침' : '이용약관';
+  const [darkMode, setDarkMode] = useState(() => {
+    try {
+      return localStorage.getItem(THEME_KEY) === 'dark';
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
     const previousTitle = document.title;
     document.title = title + ' | 룸서치';
-    try {
-      document.documentElement.dataset.theme = localStorage.getItem('room-search.theme.v1') === 'dark' ? 'dark' : 'light';
-    } catch {
-      document.documentElement.dataset.theme = 'light';
-    }
     return () => { document.title = previousTitle; };
   }, [title]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = darkMode ? 'dark' : 'light';
+    try {
+      localStorage.setItem(THEME_KEY, darkMode ? 'dark' : 'light');
+    } catch {
+      // Theme selection still applies for the current page when storage is unavailable.
+    }
+  }, [darkMode]);
 
   return (
     <div className="app-shell legal-page">
@@ -162,7 +180,7 @@ export default function LegalPage({ page }) {
         </article>
       </main>
 
-      <LegalFooter />
+      <LegalFooter darkMode={darkMode} onToggleTheme={() => setDarkMode((current) => !current)} />
     </div>
   );
 }

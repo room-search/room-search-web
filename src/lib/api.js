@@ -37,3 +37,27 @@ export function getThemeDetail(refId, signal) {
 export function getCafeDetail(cafeId, signal) {
   return request('/api/escape/cafes/' + encodeURIComponent(String(cafeId)), signal);
 }
+
+export async function createPhotoCard(themeId, record, signal) {
+  const response = await fetch('/api/photocards', {
+    method: 'POST',
+    headers: {
+      accept: 'image/svg+xml',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({ themeId: String(themeId), ...record }),
+    signal,
+  });
+  if (!response.ok) {
+    let body;
+    try {
+      body = await response.json();
+    } catch {
+      throw new Error('포토카드 응답을 읽지 못했어요.');
+    }
+    throw new Error(body?.message || '포토카드를 만들지 못했어요.');
+  }
+  const image = await response.blob();
+  if (!image.type.includes('image/svg+xml')) throw new Error('포토카드 이미지 형식이 올바르지 않아요.');
+  return image;
+}

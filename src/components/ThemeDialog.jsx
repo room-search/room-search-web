@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowUpRight,
+  Camera,
   Check,
   Clock3,
   ExternalLink,
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 import { getCafeDetail, getThemeDetail } from '../lib/api.js';
 import { formatDuration, formatScore, formatWon, safeExternalUrl, safeImageUrl, safePhoneNumber } from '../lib/formatters.js';
+import PhotoCardDialog from './PhotoCardDialog.jsx';
 
 const SCORES = [
   ['difficulty', '난이도'],
@@ -30,7 +32,9 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
   const [cafe, setCafe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cafeError, setCafeError] = useState(false);
+  const [photoCardOpen, setPhotoCardOpen] = useState(false);
   const dialogRef = useRef(null);
+  const photoCardTriggerRef = useRef(null);
   const themeImage = safeImageUrl(detail.photoUrl || theme.photoUrl);
   const cafeLabel = cafe?.name || '카페 정보';
   const coverCafeName = cafe?.name || detail.cafeName || theme.cafeName || cafeLabel;
@@ -115,6 +119,8 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
         role="dialog"
         aria-modal="true"
         aria-labelledby="theme-dialog-title"
+        aria-hidden={photoCardOpen}
+        inert={photoCardOpen}
         tabIndex="-1"
         ref={dialogRef}
         onMouseDown={(event) => event.stopPropagation()}
@@ -141,6 +147,16 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
                   <button type="button" className="icon-button" onClick={shareTheme} aria-label="테마 공유">
                     <Share2 size={18} />
                   </button>
+                  <button
+                    type="button"
+                    className="icon-button"
+                    onClick={() => setPhotoCardOpen(true)}
+                    aria-label="포토카드 만들기"
+                    title="포토카드 만들기"
+                    ref={photoCardTriggerRef}
+                  >
+                    <Camera size={18} />
+                  </button>
                 </div>
               </div>
               <div className="detail-title-block">
@@ -163,7 +179,7 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
                   return (
                     <div className="detail-score-highlight" key={key}>
                       <span>{label}</span>
-                      <strong>{valid ? formatScore(value) : '—'}</strong>
+                      <strong>{valid ? <span className="selectable-text">{formatScore(value)}</span> : '—'}</strong>
                       <span className="detail-score-highlight-track" aria-hidden="true">
                         <span style={{ width: valid ? (Math.min(5, value) / 5) * 100 + '%' : '0%' }} />
                       </span>
@@ -172,9 +188,9 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
                 })}
               </div>
               <div className="detail-quick-facts">
-                <div><span>플레이 시간</span><strong><Clock3 size={16} />{formatDuration(detail.playtime)}</strong></div>
-                <div><span>1인 가격</span><strong>{formatWon(detail.price)}</strong></div>
-                <div><span>만족도</span><strong className="detail-rating"><Star size={15} fill="currentColor" />{formatScore(detail.review?.average ?? detail.satisfy)}</strong></div>
+                <div><span>플레이 시간</span><strong><Clock3 size={16} /><span className="selectable-text">{formatDuration(detail.playtime)}</span></strong></div>
+                <div><span>1인 가격</span><strong><span className="selectable-text">{formatWon(detail.price)}</span></strong></div>
+                <div><span>만족도</span><strong className="detail-rating"><Star size={15} fill="currentColor" /><span className="selectable-text">{formatScore(detail.review?.average ?? detail.satisfy)}</span></strong></div>
               </div>
             </div>
           </div>
@@ -192,7 +208,7 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
                       <div className="score-track" aria-hidden="true">
                         <span style={{ width: valid ? (Math.min(5, value) / 5) * 100 + '%' : '0%' }} />
                       </div>
-                      <strong>{valid ? formatScore(value) : '—'}</strong>
+                      <strong>{valid ? <span className="selectable-text">{formatScore(value)}</span> : '—'}</strong>
                     </div>
                   );
                 })}
@@ -202,7 +218,7 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
             {detail.description ? (
               <section className="detail-section">
                 <div className="section-heading"><div><h3>테마 소개</h3></div></div>
-                <p className="theme-intro">{detail.description}</p>
+                <p className="theme-intro selectable-text">{detail.description}</p>
               </section>
             ) : null}
 
@@ -214,8 +230,8 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
                     전문리뷰는 '<a href="https://www.instagram.com/want_escape_/" target="_blank" rel="noopener noreferrer">방탈출 하고싶어요</a>' 채널로부터 지원받았습니다
                   </p>
                 </div>
-                {detail.review?.review ? <p className="review-quote">{detail.review.review}</p> : null}
-                {detail.review?.escapeTip ? <p className="review-tip"><Check size={15} /> {detail.review.escapeTip}</p> : null}
+                {detail.review?.review ? <p className="review-quote selectable-text">{detail.review.review}</p> : null}
+                {detail.review?.escapeTip ? <p className="review-tip"><Check size={15} /> <span className="selectable-text">{detail.review.escapeTip}</span></p> : null}
               </section>
             ) : null}
 
@@ -227,10 +243,10 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
                 {cafe?.isOpen === true ? <span className="status-pill is-open">영업 중</span> : null}
               </div>
               {cafe?.address ? (
-                <p className="cafe-address"><MapPin size={16} /> {cafe.address}</p>
+                <p className="cafe-address"><MapPin size={16} /> <span className="selectable-text">{cafe.address}</span></p>
               ) : null}
               {cafe?.area || cafe?.location ? (
-                <p className="cafe-area">{[cafe.area, cafe.location].filter(Boolean).join(' · ')}</p>
+                <p className="cafe-area selectable-text">{[cafe.area, cafe.location].filter(Boolean).join(' · ')}</p>
               ) : null}
               {cafeError ? <p className="cafe-error" role="status">카페 정보를 불러오지 못했어요.</p> : null}
               <div className="cafe-links">
@@ -252,6 +268,15 @@ export default function ThemeDialog({ theme, favorite, onFavorite, onClose, onTo
           </div>
         </div>
       </section>
+      {photoCardOpen ? (
+        <PhotoCardDialog
+          theme={{ ...detail, cafeName: cafe?.name || detail.cafeName || theme.cafeName }}
+          onClose={() => {
+            setPhotoCardOpen(false);
+            window.requestAnimationFrame(() => photoCardTriggerRef.current?.focus());
+          }}
+        />
+      ) : null}
     </div>
   );
 }
