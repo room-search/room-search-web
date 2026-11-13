@@ -8,9 +8,10 @@ const THEME_KEY = 'room-search.theme.v1';
 function LegalFooter({ darkMode, onToggleTheme }) {
   return (
     <footer className="site-footer legal-footer">
-      <nav className="footer-policy-links" aria-label="약관 및 개인정보 안내">
+      <nav className="footer-policy-links" aria-label="정책 및 앱 안내">
         <a href="/privacy-policy">개인정보처리방침</a>
         <a href="/terms">이용약관</a>
+        <a href="https://room-search.github.io/" target="_blank" rel="noopener noreferrer">안드로이드</a>
       </nav>
       <button
         type="button"

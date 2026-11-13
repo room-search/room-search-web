@@ -547,6 +547,7 @@ function SearchApp() {
         <section className="intro" aria-labelledby="page-title">
           <div className="intro-copy">
             <h1 id="page-title">방탈출 찾기</h1>
+            <p>지역부터 난이도까지, 함께 갈 테마를 골라보세요</p>
           </div>
         </section>
 
@@ -727,9 +728,10 @@ function SearchApp() {
       </main>
 
       <footer className="site-footer">
-        <nav className="footer-policy-links" aria-label="약관 및 개인정보 안내">
+        <nav className="footer-policy-links" aria-label="정책 및 앱 안내">
           <a href="/privacy-policy">개인정보처리방침</a>
           <a href="/terms">이용약관</a>
+          <a href="https://room-search.github.io/" target="_blank" rel="noopener noreferrer">안드로이드</a>
         </nav>
         <button
           type="button"

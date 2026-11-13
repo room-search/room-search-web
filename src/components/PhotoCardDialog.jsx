@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { CalendarDays, Camera, Check, ChevronDown, ChevronLeft, ChevronRight, Clipboard, Download, LoaderCircle, Sparkles, X } from 'lucide-react';
+import { CalendarDays, Camera, Check, ChevronDown, ChevronLeft, ChevronRight, Clipboard, Download, LoaderCircle, X } from 'lucide-react';
 import { createPhotoCard } from '../lib/api.js';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -333,8 +333,8 @@ export default function PhotoCardDialog({ theme, onClose }) {
         <header className="photo-card-header">
           <div className="photo-card-heading-icon"><Camera size={19} /></div>
           <div>
-            <p className="photo-card-eyebrow">ESCAPE MEMORY ARCHIVE</p>
-            <h2 id="photo-card-title">나만의 플레이 포토카드</h2>
+            <p className="photo-card-eyebrow">방탈출 플레이 기록</p>
+            <h2 id="photo-card-title">플레이 포토카드</h2>
           </div>
           <button type="button" className="icon-button photo-card-close" onClick={onClose} aria-label="포토카드 만들기 닫기">
             <X size={19} />
@@ -344,7 +344,6 @@ export default function PhotoCardDialog({ theme, onClose }) {
         <div className="photo-card-body">
           <form className="photo-card-form" onSubmit={generateCard}>
             <div className="photo-card-form-intro">
-              <Sparkles size={17} />
               <p>플레이 기록을 더해 오늘의 탈출을 한 장으로 남겨보세요.</p>
             </div>
             <p className="photo-card-optional-note">기록과 후기는 선택 입력이에요. 비워둔 항목은 카드에 표시되지 않아요.</p>
@@ -368,7 +367,7 @@ export default function PhotoCardDialog({ theme, onClose }) {
                   onClick={() => setEscapeResult(escapeResult === 'success' ? '' : 'success')}
                 >
                   <Check size={16} aria-hidden="true" />
-                  CLEAR
+                  탈출 성공
                 </button>
                 <button
                   type="button"
@@ -377,7 +376,7 @@ export default function PhotoCardDialog({ theme, onClose }) {
                   onClick={() => setEscapeResult(escapeResult === 'fail' ? '' : 'fail')}
                 >
                   <X size={16} aria-hidden="true" />
-                  FAIL
+                  탈출 실패
                 </button>
               </div>
             </div>
@@ -444,14 +443,14 @@ export default function PhotoCardDialog({ theme, onClose }) {
             <button type="submit" className="button button-primary photo-card-generate" disabled={isCreating || isPreparingPng}>
               {isCreating || isPreparingPng
                 ? <><LoaderCircle size={16} className="photo-card-spinner" />{isCreating ? '포토카드를 만드는 중' : '이미지를 준비하는 중'}</>
-                : <><Sparkles size={16} />{imageUrl ? '입력 내용 반영해 다시 만들기' : '포토카드 생성'}</>}
+                : <><Camera size={16} />{imageUrl ? '입력 내용 반영해 다시 만들기' : '포토카드 생성'}</>}
             </button>
           </form>
 
           <section className="photo-card-preview-panel" aria-label="포토카드 미리보기" ref={previewPanelRef}>
             <div className="photo-card-preview-topline">
-              <span>PREVIEW</span>
-              <span>{imageUrl && imageIsCurrent ? 'POSTER CARD' : 'ESCAPE CARD'}</span>
+              <span>미리보기</span>
+              <span>{imageUrl && imageIsCurrent ? '생성된 카드' : '플레이 기록'}</span>
             </div>
             <div className={imageUrl ? 'photo-card-preview is-ready' : 'photo-card-preview'}>
               {imageUrl ? (
@@ -459,7 +458,7 @@ export default function PhotoCardDialog({ theme, onClose }) {
               ) : (
                 <div className="photo-card-preview-empty">
                   <span className="photo-card-preview-mark"><Camera size={25} /></span>
-                  <strong>ESCAPE<br />MEMORY</strong>
+                  <strong>오늘의<br />방탈출 기록</strong>
                   <span>포스터와 플레이 기록으로<br />나만의 카드를 만들어요</span>
                 </div>
               )}
